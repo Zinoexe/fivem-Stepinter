@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FiveM Server Status</title>
+<style>
+body{font-family:sans-serif;max-width:720px;margin:40px auto;padding:0 16px}
+.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin-top:16px}
+input,button{padding:12px;border-radius:10px;border:1px solid #ccc;width:100%}
+button{background:#222;color:#fff;border:none;margin-top:10px}
+.ok{color:green;font-weight:bold}
+.bad{color:red;font-weight:bold}
+</style>
+</head>
+<body>
+
+<h1>เช็กสถานะ FiveM</h1>
+<p>ใส่ IP:PORT เช่น <b>1.2.3.4:30120</b></p>
+
+<div class="card">
+  <input id="addr" placeholder="IP:PORT">
+  <button onclick="check()">เช็ก</button>
+  <p id="msg"></p>
+</div>
+
+<div class="card" id="result" style="display:none">
+  <h2 id="name"></h2>
+  <p>สถานะ: <span id="status"></span></p>
+  <p>ผู้เล่น: <span id="players"></span></p>
+</div>
+
+<script>
+const WORKER = "ใส่ลิงก์ worker ตรงนี้ทีหลัง";
+
+async function check(){
+  const a=document.getElementById("addr").value;
+  document.getElementById("msg").innerText="กำลังเช็ก...";
+  try{
+    const r=await fetch(`${WORKER}?addr=${a}`);
+    const j=await r.json();
+    document.getElementById("result").style.display="block";
+    document.getElementById("name").innerText=j.name||"ไม่ทราบชื่อ";
+    document.getElementById("players").innerText=`${j.players}/${j.max}`;
+    document.getElementById("status").innerHTML='<span class="ok">ออนไลน์</span>';
+    document.getElementById("msg").innerText="";
+  }catch{
+    document.getElementById("msg").innerHTML='<span class="bad">เชื่อมต่อไม่ได้</span>';
+  }
+}
+</script>
+
+</body>
+</html>
